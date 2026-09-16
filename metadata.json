@@ -1,0 +1,6 @@
+{
+  "name": "短篇小说与微短剧创作工坊",
+  "description": "基于盐言故事与短片大纲Skill的智能创作工作台，支持故事契约、骨架五段、场景卡生成、导语打磨、知乎体正文撰写、质量门体检与去AI腔审查",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
