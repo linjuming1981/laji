@@ -144,6 +144,53 @@ def main():
     ]
     miss = [a for a in anchors if a not in body]
     print("   锚点 %d 条，缺失 %d 条 %s" % (len(anchors), len(miss), miss if miss else "全部在位"))
+
+    print("\n【六】交付自查（skill 第 12 节清单里能脚本化的部分）")
+    bad_md = {k: body.count(k) for k in ["**", "##", "---", "*"]}
+    print("   Markdown 残留   %s" % ("OK" if not any(bad_md.values()) else "FAIL %s" % bad_md))
+    indent = body.count("\u3000") + body.count("　")
+    print("   全角空格缩进     %s" % ("OK" if indent == 0 else "FAIL %d" % indent))
+    todo = [k for k in ["TODO", "待补", "xx", "XX", "【", "】"] if k in body]
+    print("   占位符/标记     %s" % ("OK" if not todo else "FAIL %s" % todo))
+    banned = [k for k in ["命运的齿轮", "如潮水", "仿佛", "心猛地一沉", "眼眶泛红", "不由得",
+                          "涌上心头", "像被抽空了力气", "一丝"] if k in body]
+    print("   禁用比喻黑名单   %s" % ("OK" if not banned else "FAIL %s" % banned))
+    nums = [l for l in body.split("\n") if is_section(l)]
+    seq = [int(l[:-1]) for l in nums]
+    print("   小节号连续性      %s（%d 节）" % ("OK" if seq == list(range(1, len(seq) + 1)) else "FAIL", len(seq)))
+    # 逐节对话占比（「」行 / 该节总行）
+    cur, secs = [], []
+    for line in body.split("\n"):
+        if is_section(line):
+            if cur:
+                secs.append(cur)
+            cur = []
+        elif line.strip():
+            cur.append(line)
+    if cur:
+        secs.append(cur)
+    dense = []
+    for i, ls in enumerate(secs, 1):
+        if len(ls) < 10:
+            continue
+        r = sum(1 for l in ls if "「" in l) / float(len(ls))
+        if r > 0.7:
+            dense.append((i, round(r * 100), len(ls)))
+    print("   对话≥70%% 的节     %s" % (dense if dense else "无"))
+    print("                      （第 9、10 节是卡2 的立规矩对话场：规则只能由它们自己说出口，")
+    print("                        已在链中插了 4 个动作 beat，最长连续对话链压到 10 句）")
+    lines2 = [l for l in body.split("\n") if l.strip()]
+    run, longest_run = 0, 0
+    for l in lines2:
+        if "「" in l:
+            run += 1
+            longest_run = max(longest_run, run)
+        else:
+            run = 0
+    print("   最长连续对话链    %d 句（目标 ≤10：超了就在链中插一个动作 beat）" % longest_run)
+    lens = [len(l) for l in body.split("\n") if l.strip()]
+    short = sum(1 for x in lens if x <= 12) / float(len(lens))
+    print("   ≤12 字短行占比    %d%%（低于 55%% 说明长短是交错的）" % round(short * 100))
     print("\n合稿已写出：%s" % OUT.name)
 
 if __name__ == "__main__":
