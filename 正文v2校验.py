@@ -137,7 +137,7 @@ def main():
     print('   %s' % ('OK' if not hit else '✗ %s' % hit))
 
     # 规则口径
-    print('\n【七】v2.2 规则口径（不该出现的老设定）')
+    print('\n【七】v2.3 规则口径（不该出现的老设定）')
     bad = ['老花镜', '透明', '越用越薄', '糊的', '凉透', '二十分钟', '壳先落地', '手背上的灰',
            '饼干盒', '铁盒', '现金', '纸币', '厚度']
     hit2 = [(b, text.count(b)) for b in bad if text.count(b)]
